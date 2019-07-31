@@ -15,6 +15,7 @@ class Todo extends Component {
         this.onAddTodo = this.onAddTodo.bind(this)
         this.onEditTodo = this.onEditTodo.bind(this)
         this.onEnter = this.onEnter.bind(this)
+        this.onEnterEdit = this.onEnterEdit.bind(this)
     }
 
     onAddTodo (e){
@@ -25,7 +26,7 @@ class Todo extends Component {
 
     onEditTodo (e){
         this.setState({
-            edittext: e.target.valu
+            edittext: e.target.value
         })
     }
 
@@ -36,19 +37,29 @@ class Todo extends Component {
       }
     }
 
+    onEnterEdit (e) {
+        if(e.key=='Enter') {
+            this.props.editTodo(this.state.edittext, this.state.edit);
+            this.setState({edit:''})
+        }
+    }
+
 
 
     render() {
+        console.log(this.props)
         return (
             <div> 
                 
                 <input value={this.state.edit ? this.state.edittext : this.state.text}
                 onChange = {this.state.edit? this.onEditTodo :this.onAddTodo}
                  placeholder="add items..."
-                 onKeyPress = {this.onEnter}
+                 onKeyPress = {this.state.edit ? this.onEnterEdit : this.onEnter}
+                 autofocus="true"
                   /> 
-                  <button onClick={()=> {this.state.edit?  this.props.editTodo(this.state.edittext, this.state.edit) && this.setState({edit:''})    :  this.props.addTodo(this.state.text);
-                     this.setState({text: ''}) } }>{this.state.edit ? 'edit' : '+' }</button>
+                  <button onClick={()=> {this.state.edit? this.props.editTodo(this.state.edittext, this.state.edit) && this.setState({edit:''})
+                  :  this.props.addTodo(this.state.text);
+                     this.setState({text: ''}) } }> {this.state.edit ? 'edit' : '+' } </button> {this.state.edit? <button onClick={()=> this.setState({edit:''})}>X</button> : null}
 
 
                 <div>
@@ -58,10 +69,10 @@ class Todo extends Component {
                         <div className={t.completed==false ? null : "strike"}>{ t.text } 
                         <button className="button" onClick={()=> {this.props.removeTodo(t.id)}}>delete</button> 
                         <button className="button" onClick={()=> {this.setState({edit: t.id}); this.setState({edittext:t.text})}}>edit</button>
-                        <button className="button" onClick={()=> {this.props.checkOffTodo(t.id) }}>complete</button>
+                        <button className="button" onClick={()=> {this.props.checkOffTodo(t.id) }}>{t.completed==false? 'check' : 'uncheck'}</button>
                         </div>
                          </li></ul> 
-                     </div>))}
+                     </div>))} 
                 </div>
         
 
